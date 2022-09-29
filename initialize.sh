@@ -4,7 +4,7 @@ pip install -r requirements.txt
 if [ "$1" = "--colab" ]; then
     git lfs clone http://gitlab.aicrowd.com/aicrowd/challenges/iglu-challenge-2022/iglu-2022-rl-mhb-baseline.git
 else
-  git lfs clone http://gitlab.aicrowd.com/aicrowd/challenges/iglu-challenge-2022/iglu-2022-rl-mhb-baseline.git
+    git clone http://gitlab.aicrowd.com/aicrowd/challenges/iglu-challenge-2022/iglu-2022-rl-mhb-baseline.git
 fi
 
 cp -r ./iglu-2022-rl-mhb-baseline/agents/mhb_baseline/nlp_model/model ./nlp_model/
