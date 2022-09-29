@@ -4,6 +4,10 @@ It's a simple agent for [IGLU Contest](https://www.iglu-contest.net/) that can b
 fixed position and in empty starting state without using environment information 
 if correct resulting grid state is given.
 
+## Prerequisites
+- Python 3.7+
+- git lfs (for weight download)
+
 ## Restriction of the agent
 Agent can work properly if he starts in the empty grid and with provided starting position
 
