@@ -63,9 +63,9 @@ COLOR_TO_INVENTORY_ACTION = {
 class BuilderWalking:
     def __init__(self,
                  target_grid: np.ndarray,
+                 current_position: np.ndarray,
                  block_steps=4,
-                 camera_rotation_degrees=5,
-                 current_position: Optional[np.ndarray] = None):
+                 camera_rotation_degrees=5):
         self.initialized = False
         self.target_grid = self._reshape_grid(self.swap_grid_axes(target_grid))
         self.camera = [0, 0]
