@@ -1,0 +1,9 @@
+data
+plots
+.idea
+__pycache__
+
+./iglu_2022_rl_mhb_baseline
+./nlp_model/model
+./nlp_model/tokenizer
+./nlp_model/t5-autoregressive-history-3-best.pt
