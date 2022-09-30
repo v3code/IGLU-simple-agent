@@ -29,6 +29,8 @@ def load_model(args):
     # model.save_pretrained("model")
     model.resize_token_embeddings(len(tokenizer))
     model.load_state_dict(torch.load(args.model, map_location=device))
+    if torch.cuda.is_available():
+        model.cuda()
     model.eval()
 
     return model, tokenizer
