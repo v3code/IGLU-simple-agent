@@ -28,8 +28,10 @@ def load_model(args):
     model = T5ForConditionalGeneration.from_pretrained(os.path.join(script_dir, "model/"))
     # model.save_pretrained("model")
     model.resize_token_embeddings(len(tokenizer))
-    model.load_state_dict(torch.load(args.model, map_location=device))
-    model.to(device)
+    weights = torch.load(args.model) if torch.cuda.is_available() else torch.load(args.model, map_location=device)
+    model.load_state_dict(weights)
+    if torch.cuda.is_available():
+        model.cuda()
     model.eval()
 
     return model, tokenizer
@@ -39,7 +41,8 @@ def generate_actions(args, model, tokenizer, command, history, log_file=None):
     context = parse_logs(history) + '<Architect> ' + command.strip()
 
     input_ids = tokenizer(f"{args.task_prefix} {context}", return_tensors="pt").input_ids
-    input_ids.to(device)
+    if torch.cuda.is_available():
+        input_ids = input_ids.cuda()
     outputs = model.generate(input_ids, min_length=2, max_length=args.max_target_length, )
     prediction = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
@@ -155,7 +158,7 @@ class GridPredictor:
 
 def get_dialog(subtask):
     import gym
-    env = gym.make('IGLUGridworld-v0')
+    env = gym.make('IGLUGridworld-v0', render=False)
     env.set_task(subtask)
     obs = env.reset()
     return obs['dialog']
