@@ -6,9 +6,8 @@ if correct resulting grid state is given.
 
 ## Prerequisites
 - Python 3.7+
-- git lfs (for weight download)
 
-Before starting anythong, run the initialize.sh script.
+Before starting anything, run the initialize.sh script.
 
 ## Restriction of the agent
 Agent can work properly if he starts in the empty grid and with provided starting position
