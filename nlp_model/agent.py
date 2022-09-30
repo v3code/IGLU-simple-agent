@@ -29,8 +29,7 @@ def load_model(args):
     # model.save_pretrained("model")
     model.resize_token_embeddings(len(tokenizer))
     model.load_state_dict(torch.load(args.model, map_location=device))
-    if torch.cuda.is_available():
-        model.cuda()
+    model.to(device)
     model.eval()
 
     return model, tokenizer
@@ -40,8 +39,8 @@ def generate_actions(args, model, tokenizer, command, history, log_file=None):
     context = parse_logs(history) + '<Architect> ' + command.strip()
 
     input_ids = tokenizer(f"{args.task_prefix} {context}", return_tensors="pt").input_ids
-
-    outputs = model.generate(input_ids.cuda(), min_length=2, max_length=args.max_target_length, )
+    input_ids.to(device)
+    outputs = model.generate(input_ids, min_length=2, max_length=args.max_target_length, )
     prediction = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     if args.verbose > 0:
