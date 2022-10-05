@@ -63,7 +63,7 @@ COLOR_TO_INVENTORY_ACTION = {
 class BuilderWalking:
     def __init__(self,
                  target_grid: np.ndarray,
-                 current_position: np.ndarray,
+                 start_position: np.ndarray,
                  block_steps=4,
                  camera_rotation_degrees=5):
         self.initialized = False
@@ -71,7 +71,7 @@ class BuilderWalking:
         self.camera = [0, 0]
         self.block_steps = block_steps
         self.camera_rotation_degrees = camera_rotation_degrees
-        self.current_position, self.y_position = self.process_current_position(current_position)
+        self.current_position, self.y_position = self.process_start_position(start_position)
         self.queue: Deque[Action] = deque()
         self.building_queue: Deque[BuildingQueueItem] = deque()
         self.is_done = False
@@ -98,13 +98,13 @@ class BuilderWalking:
         new_grid = new_grid.swapaxes(0, 2)
         return new_grid
 
-    def process_current_position(self, current_position: np.ndarray):
-        if current_position is None:
+    def process_start_position(self, position: np.ndarray):
+        if position is None:
             return None, 0
         plane_position = np.zeros(2, dtype=np.int32)
-        plane_position[0], plane_position[1], y_position = current_position[2], \
-                                                           current_position[0], \
-                                                           current_position[1]
+        plane_position[0], plane_position[1], y_position = position[2], \
+                                                           position[0], \
+                                                           position[1]
         return self._add_bias_to_position(plane_position + np.array([5, 5])), int(y_position)
 
     def _reshape_grid(self, target_grid):

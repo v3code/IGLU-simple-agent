@@ -13,12 +13,14 @@ from nlp_model.utils import plot_voxel, compute_metric
 
 dataset = IGLUDataset(dataset_version='v0.1.0-rc1', )
 
+FIXED_START_POSITION = np.array([0, 0, 0])
 
 def eval_agent():
     grid_predictor = GridPredictor()
     env = gym.make('IGLUGridworld-v0', vector_state=True, render_size=(800, 600))
     # print(np.array(task.starting_grid).nonzero())
     env.set_task(DUMMY_TASK)
+    obs = env.reset()
     total_score = []
 
     for j, (task_id, session_id, subtask_id, subtask) in enumerate(dataset):
@@ -29,8 +31,7 @@ def eval_agent():
         predicted_grid = grid_predictor.predict_grid(dialog)
 
         obs = env.reset()
-        agent = BuilderWalking(predicted_grid, current_position=obs['agentPos'][:3])
-        done = False
+        agent = BuilderWalking(predicted_grid, start_position=FIXED_START_POSITION)
 
         while not agent.is_done:
             action = agent.get_action()
@@ -44,6 +45,8 @@ def eval_agent():
         results = {'F1': f1_score}
         total_score.append(f1_score)
         results_str = " ".join([f"{metric}: {value}" for metric, value in results.items()])
+        plot_voxel(obs['grid'], text=str_id + ' ' + f'({results_str})' + "\n" + dialog).savefig(
+            f'./plots/{str_id}-built.png')
         plot_voxel(predicted_grid, text=str_id + ' ' + f'({results_str})' + "\n" + dialog).savefig(
             f'./plots/{str_id}-predicted.png')
         plot_voxel(subtask.target_grid, text=str_id + " (Ground truth)\n" + dialog).savefig(
