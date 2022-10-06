@@ -63,7 +63,7 @@ COLOR_TO_INVENTORY_ACTION = {
 class BuilderWalking:
     def __init__(self,
                  target_grid: np.ndarray,
-                 start_position: np.ndarray,
+                 start_position: Optional[np.ndarray] = None,
                  block_steps=4,
                  camera_rotation_degrees=5):
         self.initialized = False
@@ -97,6 +97,17 @@ class BuilderWalking:
         new_grid = copy.deepcopy(grid)
         new_grid = new_grid.swapaxes(0, 2)
         return new_grid
+
+    def _init_position(self):
+        self.camera_down()
+        self.camera = np.array([0, 0])
+        self.camera_down()
+        self.camera_forward()
+        self._move_steps(20 * self.block_steps, Direction.DOWN)
+        self._move_steps(20 * self.block_steps, Direction.RIGHT)
+        self._move_steps(2 * self.block_steps, Direction.UP)
+        self._move_steps(2 * self.block_steps, Direction.LEFT)
+        self.current_position = np.array([12, 12])
 
     def process_start_position(self, position: np.ndarray):
         if position is None:
@@ -212,10 +223,12 @@ class BuilderWalking:
         self.move_camera(np.array([self.camera[0], 90]))
 
     def get_action(self):
-        if not self.initialized:
-            self.initialized = True
-            self.build_building_queue()
+        if self.current_position is None:
+            self._init_position()
         if not self.queue:
+            if not self.initialized:
+                self.initialized = True
+                self.build_building_queue()
             if self.building_queue:
                 self.building_queue.popleft().process()
             else:

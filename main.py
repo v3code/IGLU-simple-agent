@@ -13,8 +13,6 @@ from nlp_model.utils import plot_voxel, compute_metric
 
 dataset = IGLUDataset(dataset_version='v0.1.0-rc1', )
 
-FIXED_START_POSITION = np.array([0, 0, 0])
-
 def eval_agent():
     grid_predictor = GridPredictor()
     env = gym.make('IGLUGridworld-v0', vector_state=True, render_size=(800, 600))
@@ -31,7 +29,10 @@ def eval_agent():
         predicted_grid = grid_predictor.predict_grid(dialog)
 
         obs = env.reset()
-        agent = BuilderWalking(predicted_grid, start_position=FIXED_START_POSITION)
+        agent = BuilderWalking(predicted_grid)
+
+        if j == 11:
+            break
 
         while not agent.is_done:
             action = agent.get_action()
